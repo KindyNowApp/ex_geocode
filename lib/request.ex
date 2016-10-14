@@ -28,12 +28,15 @@ defmodule ExGeocode.Request do
   end
 
   def get(request) do
-    IO.inspect request
     base_url
     |> HTTPoison.get([], [params: request])
   end
 
   def base_url do
-    "https://maps.googleapis.com/maps/api/geocode/json"
+    api_host <> "/maps/api/geocode/json"
+  end
+
+  def api_host do
+    Application.get_env(:ex_geocode, :api_host)
   end
 end
