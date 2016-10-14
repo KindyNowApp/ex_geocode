@@ -20,6 +20,8 @@ defmodule ExGeocode do
 
   use Application
   alias ExGeocode.Config
+  alias ExGeocode.ComponentFilters
+  alias ExGeocode.Request
 
   def start(_,_) do
     import Supervisor.Spec, warn: false
@@ -30,4 +32,13 @@ defmodule ExGeocode do
     Supervisor.start_link(children, opts)
   end
 
+  @spec geocode_address(String.t) :: {atom, map}
+  def geocode_address(address) do
+    Request.geocode(address)
+  end
+
+  @spec geocode_address(String.t, ComponentFilters.t) :: {atom, map}
+  def geocode_address(address, component_filters) do
+    Request.geocode(address, component_filters)
+  end
 end

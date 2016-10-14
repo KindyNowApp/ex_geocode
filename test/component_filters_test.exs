@@ -3,7 +3,7 @@ defmodule ExGeocode.ComponentFiltersTest do
 
   alias ExGeocode.ComponentFilters
 
-  test "Serialize Component Filters" do
+  test "serialize component filters" do
     filters = %ComponentFilters{ route: "Test Street", country: "AU" }
 
     assert ComponentFilters.serialize(filters) == "country:AU|route:Test Street"

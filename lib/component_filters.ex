@@ -15,7 +15,7 @@ defmodule ExGeocode.ComponentFilters do
 
 
   @doc """
-  Serialize component filters into a string,
+  Serialize a component filters struct into a string,
   e.g. `postal_code:1234|country:AU`
   """
   def serialize(%ComponentFilters{} = filters) do
@@ -27,7 +27,6 @@ defmodule ExGeocode.ComponentFilters do
   end
 
   def serialize_filters(filters) do
-    # for {k, v} <- Map.from_struct(post), v != nil, into: %{}, do: {k, v}
     for {k,v} <- filters, do: Atom.to_string(k) <> ":" <> v
   end
 end
