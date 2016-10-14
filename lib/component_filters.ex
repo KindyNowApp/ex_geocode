@@ -27,6 +27,7 @@ defmodule ExGeocode.ComponentFilters do
   end
 
   def serialize_filters(filters) do
+    # for {k, v} <- Map.from_struct(post), v != nil, into: %{}, do: {k, v}
     for {k,v} <- filters, do: Atom.to_string(k) <> ":" <> v
   end
 end
