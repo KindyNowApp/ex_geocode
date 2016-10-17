@@ -1,5 +1,6 @@
 defmodule ExGeocode.Request do
   @moduledoc """
+  A Geocode request which consists of an address and address components (optional)
   """
 
   alias __MODULE__
@@ -12,16 +13,7 @@ defmodule ExGeocode.Request do
 
   @type t :: %__MODULE__{}
 
-  def geocode(address) when is_bitstring(address) do
-    %Request{address: address}
-    |> geocode
-  end
-
-  def geocode(address, %ComponentFilters{} = components) do
-    %Request{address: address, components: ComponentFilters.serialize(components)}
-    |> geocode
-  end
-
+  @spec geocode(Request.t) :: {atom, map}
   def geocode(%Request{} = request) do
     request
     |> attach_api_key
@@ -30,19 +22,31 @@ defmodule ExGeocode.Request do
     |> get
   end
 
+  @doc """
+  Geocode an address
+  """
+  @spec geocode(String.t) :: {atom, map}
+  def geocode(address) when is_bitstring(address) do
+    %Request{address: address}
+    |> geocode
+  end
+
+  @doc """
+  Geocode an address with component filters
+  """
+  @spec geocode(String.t, ComponentFilters.t) :: {atom, map}
+  def geocode(address, %ComponentFilters{} = components) do
+    %Request{address: address, components: ComponentFilters.serialize(components)}
+    |> geocode
+  end
+
+  @spec get(map) :: {atom, map}
   def get(request) do
-    base_url
+    Config.base_url
     |> HTTPoison.get([], [params: request])
   end
 
-  def base_url do
-    api_host <> "/maps/api/geocode/json"
-  end
-
-  def api_host do
-    Application.get_env(:ex_geocode, :api_host)
-  end
-
+  @spec attach_api_key(Request.t) :: Request.t
   def attach_api_key(%Request{} = request) do
     %Request{request | key: Config.api_key}
   end

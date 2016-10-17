@@ -18,6 +18,7 @@ defmodule ExGeocode.ComponentFilters do
   Serialize a component filters struct into a string,
   e.g. `postal_code:1234|country:AU`
   """
+  @spec serialize(ComponentFilters.t) :: String.t
   def serialize(%ComponentFilters{} = filters) do
     filters
     |> Map.from_struct
@@ -26,6 +27,10 @@ defmodule ExGeocode.ComponentFilters do
     |> Enum.join("|")
   end
 
+  @doc """
+  Serialize filters to a list of strings that are formatted <key>:<value>
+  """
+  @spec serialize_filters(map) :: Enumerable.t
   def serialize_filters(filters) do
     for {k,v} <- filters, do: Atom.to_string(k) <> ":" <> v
   end
