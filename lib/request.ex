@@ -3,10 +3,12 @@ defmodule ExGeocode.Request do
   """
 
   alias __MODULE__
+  alias ExGeocode.Config
   alias ExGeocode.ComponentFilters
 
   defstruct address: nil,
-    components: nil
+    components: nil,
+    key: nil
 
   @type t :: %__MODULE__{}
 
@@ -22,6 +24,7 @@ defmodule ExGeocode.Request do
 
   def geocode(%Request{} = request) do
     request
+    |> attach_api_key
     |> Map.from_struct
     |> Enum.filter(fn {_, v} -> v != nil end) # remove nil values
     |> get
@@ -38,5 +41,9 @@ defmodule ExGeocode.Request do
 
   def api_host do
     Application.get_env(:ex_geocode, :api_host)
+  end
+
+  def attach_api_key(%Request{} = request) do
+    %Request{request | key: Config.api_key}
   end
 end
