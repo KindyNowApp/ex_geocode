@@ -19,7 +19,6 @@ defmodule ExGeocode do
   """
 
   use Application
-  alias ExGeocode.Config
   alias ExGeocode.ComponentFilters
   alias ExGeocode.Request
 
