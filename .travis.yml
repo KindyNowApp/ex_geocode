@@ -4,4 +4,4 @@ elixir:
 otp_release:
   - 18.3
 env:
-  - GOOGLE_MAPS_GEOCODING_API_KEY=fake_api_key
+  - GOOGLE_MAPS_GEOCODE_API_KEY=fake_api_key
