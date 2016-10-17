@@ -6,6 +6,7 @@ defmodule ExGeocode.Request do
   alias __MODULE__
   alias ExGeocode.Config
   alias ExGeocode.ComponentFilters
+  alias ExGeocode.Response
 
   defstruct address: nil,
     components: nil,
@@ -44,6 +45,15 @@ defmodule ExGeocode.Request do
   def get(request) do
     Config.base_url
     |> HTTPoison.get([], [params: request])
+    |> parse_response
+  end
+
+  def parse_response({:ok, %HTTPoison.Response{body: body, status_code: 200}}) do
+    {:ok, Response.parse(body)}
+  end
+
+  def parse_response({:error, %HTTPoison.Error{id: _id, reason: reason }}) do
+    {:error, reason}
   end
 
   @spec attach_api_key(Request.t) :: Request.t
