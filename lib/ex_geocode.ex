@@ -1,36 +1,42 @@
 defmodule ExGeocode do
+
   @moduledoc """
   An Elixir API client for the Google Geocode API
 
-  ## Usage
-
-  ```
-  def deps
-    [{:ex_geocode, "~> 0.1"}]
-  ```
-
-  Add the `:ex_geocode` application as your list of applications in `mix.exs`:
+  # Usage
 
   ```elixir
-  def applications do
+  def deps do
+    [{:ex_geocode, "~> 0.1.0"}]
+  end
+  ```
+
+  Add the `:ex_gecode` application as your list of applications in `mix.exs`:
+
+  ```elixir
+  def application do
     [applications: [:logger, :ex_geocode]]
   end
   ```
+
+  Then run `$ mix do deps.get, compile` to download and compile your dependencies.
+
+  You'll need to set a few config parameters, some in your app config, some, like
+  API credentials, we recommend keeping as environment viarables: take a look in
+  the lib/config.ex file to see what is required.
+
+  Then geocoding an address is as easy as:
+
+  ```elixir
+  ExGeocode.geocode_address(address)
+  ```
   """
 
-  use Application
-  alias ExGeocode.ComponentFilters
-  alias ExGeocode.Request
+  alias ExGeocode.{ComponentFilters, Request}
 
-  def start(_,_) do
-    import Supervisor.Spec, warn: false
-
-    children = []
-
-    opts = [strategy: :one_for_one, name: ExGeocode.Supervisor]
-    Supervisor.start_link(children, opts)
-  end
-
+  @doc """
+  Geocodes an address.
+  """
   @spec geocode_address(String.t) :: {atom, map}
   def geocode_address(address) do
     Request.geocode(address)
@@ -40,4 +46,5 @@ defmodule ExGeocode do
   def geocode_address(address, component_filters) do
     Request.geocode(address, component_filters)
   end
+
 end

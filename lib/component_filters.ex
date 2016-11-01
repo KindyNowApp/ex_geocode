@@ -1,4 +1,5 @@
 defmodule ExGeocode.ComponentFilters do
+
   @moduledoc """
   Component filters based off the Geocoding Component Filtering spec
   which can be found here: https://developers.google.com/maps/documentation/geocoding/intro#ComponentFiltering
@@ -13,10 +14,14 @@ defmodule ExGeocode.ComponentFilters do
 
   @type t :: %__MODULE__{}
 
-
-  @doc """
+  @doc ~S"""
   Serialize a component filters struct into a string,
-  e.g. `postal_code:1234|country:AU`
+
+  ### Examples
+
+      iex> filters = %ComponentFilters{route: "Test Street", country: "AU"}
+      ...> ExGeocode.ComponentFilters.serialize(filters)
+      "country:AU|route:Test Street"
   """
   @spec serialize(ComponentFilters.t) :: String.t
   def serialize(%ComponentFilters{} = filters) do
@@ -27,11 +32,9 @@ defmodule ExGeocode.ComponentFilters do
     |> Enum.join("|")
   end
 
-  @doc """
-  Serialize filters to a list of strings that are formatted <key>:<value>
-  """
   @spec serialize_filters(map) :: Enumerable.t
-  def serialize_filters(filters) do
+  defp serialize_filters(filters) do
     for {k,v} <- filters, do: Atom.to_string(k) <> ":" <> v
   end
+
 end
