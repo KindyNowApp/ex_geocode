@@ -1,4 +1,5 @@
 defmodule ExGeocode.Helper do
+
   @moduledoc """
   Some helper functions for dealing with the Google Geocode API.
   """

@@ -1,6 +1,7 @@
 defmodule ExGeocode.Request do
+
   @moduledoc """
-  A Geocode request which consists of an address and address components (optional)
+  A geocode request which consists of an address and address components (optional).
   """
 
   alias __MODULE__
@@ -14,6 +15,9 @@ defmodule ExGeocode.Request do
 
   @type t :: %__MODULE__{}
 
+  @doc """
+  Geocode an address.
+  """
   @spec geocode(Request.t) :: {atom, map}
   def geocode(%Request{} = request) do
     request
@@ -23,9 +27,6 @@ defmodule ExGeocode.Request do
     |> get
   end
 
-  @doc """
-  Geocode an address
-  """
   @spec geocode(String.t) :: {atom, map}
   def geocode(address) when is_bitstring(address) do
     %Request{address: address}
@@ -33,7 +34,7 @@ defmodule ExGeocode.Request do
   end
 
   @doc """
-  Geocode an address with component filters
+  Geocode an address with component filters.
   """
   @spec geocode(String.t, ComponentFilters.t) :: {atom, map}
   def geocode(address, %ComponentFilters{} = components) do
@@ -42,17 +43,19 @@ defmodule ExGeocode.Request do
   end
 
   @spec get(map) :: {atom, map}
-  def get(request) do
+  defp get(request) do
     Config.base_url
     |> HTTPoison.get([], [params: request])
     |> parse_response
   end
 
-  def parse_response({:ok, %HTTPoison.Response{body: body, status_code: 200}}) do
+  @spec parse_response({atom, HTTPoison.Response.t}) :: {atom, Response.t}
+  @spec parse_response({atom, HTTPoison.Error.t}) :: {atom, String.t}
+  defp parse_response({:ok, %HTTPoison.Response{body: body, status_code: 200}}) do
     {:ok, Response.parse(body)}
   end
 
-  def parse_response({:error, %HTTPoison.Error{id: _id, reason: reason }}) do
+  defp parse_response({:error, %HTTPoison.Error{id: _id, reason: reason}}) do
     {:error, reason}
   end
 

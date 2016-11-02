@@ -1,4 +1,4 @@
-defmodule ExNexmo.Mixfile do
+defmodule ExGeocode.Mixfile do
 
   use Mix.Project
 

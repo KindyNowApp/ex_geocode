@@ -9,12 +9,23 @@ def deps do
 end
 ```
 
-Then run `$ mix do deps.get, compile` to download and compile your dependencies
+Add the `:ex_gecode` application as your list of applications in `mix.exs`:
 
-You'll need to set a few config parameters, some in your app config, some, like API credentials, we recommend keeping as environment viarables: take a look in the lib/config.ex file to see what is required.
+```elixir
+def application do
+  [applications: [:logger, :ex_geocode]]
+end
+```
+
+Then run `$ mix do deps.get, compile` to download and compile your dependencies.
+
+You'll need to set a few config parameters, some in your app config, some, like
+API credentials, we recommend keeping as environment viarables: take a look in
+the lib/config.ex file to see what is required.
 
 Then geocoding an address is as easy as:
 
 ```elixir
 ExGeocode.geocode_address(address)
 ```
+
