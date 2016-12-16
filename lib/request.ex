@@ -49,10 +49,13 @@ defmodule ExGeocode.Request do
     |> parse_response
   end
 
-  @spec parse_response({atom, HTTPoison.Response.t}) :: {atom, Response.t}
-  @spec parse_response({atom, HTTPoison.Error.t}) :: {atom, String.t}
+  @spec parse_response({atom, HTTPoison.Response.t | HTTPoison.Error}) :: {atom, Response.t} | {atom, String.t}
   defp parse_response({:ok, %HTTPoison.Response{body: body, status_code: 200}}) do
     {:ok, Response.parse(body)}
+  end
+
+  defp parse_response({:ok, %HTTPoison.Response{body: body, status_code: 500}}) do
+    {:error, Response.parse(body)}
   end
 
   defp parse_response({:error, %HTTPoison.Error{id: _id, reason: reason}}) do

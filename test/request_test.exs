@@ -18,7 +18,8 @@ defmodule ExGeocode.RequestTest do
     bypass = Bypass.open
     Application.put_env :ex_geocode, :api_host, "http://localhost:#{bypass.port}"
 
-    valid_response = """
+    valid_failure_response = "{\n   \"results\" : [],\n   \"status\" : \"UNKNOWN_ERROR\"\n}\n"
+    valid_success_response = """
       {
         "results": ["foo"],
         "status": "OK"
@@ -29,24 +30,41 @@ defmodule ExGeocode.RequestTest do
         partial_address: partial_address,
         address_components: address_components,
         api_key: api_key,
-        valid_response: valid_response,
+        valid_success_response: valid_success_response,
+        valid_failure_response: valid_failure_response,
         bypass: bypass
       }
     }
   end
 
-  test "geocode address", %{
+  test "handles geocode error", %{
     full_address: full_address,
     bypass: bypass,
-    valid_response: valid_response,
+    valid_failure_response: valid_failure_response,
     api_key: api_key
   } do
     Bypass.expect bypass, fn conn ->
       assert "/maps/api/geocode/json" == conn.request_path
       assert %{ "address" => full_address, "key" => api_key } == URI.decode_query(conn.query_string)
       assert "GET" == conn.method
+      Plug.Conn.resp(conn, 500, valid_failure_response)
+    end
+    {:error, %ExGeocode.Response{results: results, status: status}} = Request.geocode(full_address)
+    assert results == []
+    assert status == "UNKNOWN_ERROR"
+  end
 
-      Plug.Conn.resp(conn, 200, valid_response)
+  test "geocode address", %{
+    full_address: full_address,
+    bypass: bypass,
+    valid_success_response: valid_success_response,
+    api_key: api_key
+  } do
+    Bypass.expect bypass, fn conn ->
+      assert "/maps/api/geocode/json" == conn.request_path
+      assert %{ "address" => full_address, "key" => api_key } == URI.decode_query(conn.query_string)
+      assert "GET" == conn.method
+      Plug.Conn.resp(conn, 200, valid_success_response)
     end
 
     assert {:ok, _response} = Request.geocode(full_address)
@@ -56,7 +74,7 @@ defmodule ExGeocode.RequestTest do
     partial_address: partial_address,
     address_components: address_components,
     bypass: bypass,
-    valid_response: valid_response,
+    valid_success_response: valid_success_response,
     api_key: api_key
   } do
     Bypass.expect bypass, fn conn ->
@@ -68,7 +86,7 @@ defmodule ExGeocode.RequestTest do
       } == URI.decode_query(conn.query_string)
       assert "GET" == conn.method
 
-      Plug.Conn.resp(conn, 200, valid_response)
+      Plug.Conn.resp(conn, 200, valid_success_response)
     end
 
     assert {:ok, _response} = Request.geocode(partial_address, address_components)
