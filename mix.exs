@@ -1,10 +1,10 @@
-defmodule ExNexmo.Mixfile do
+defmodule ExGeocode.Mixfile do
 
   use Mix.Project
 
   def project do
     [
-      app: :ex_nexmo,
+      app: :ex_geocode,
       version: "0.1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
