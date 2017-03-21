@@ -13,7 +13,7 @@ defmodule ExGeocode.Config do
   The base URL for requests which defaults to /maps/api/geocode/json
   """
   def base_url do
-    api_host <> Application.get_env(:ex_geocode, :base_url, "/maps/api/geocode/json")
+    api_host() <> Application.get_env(:ex_geocode, :base_url, "/maps/api/geocode/json")
   end
 
   @doc """
